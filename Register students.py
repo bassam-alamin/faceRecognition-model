@@ -7,6 +7,8 @@ import cv2
 import dlib
 import Face_Recognition
 
+import csv
+
 
 def add_to_database(name, reg, image):
     conn = sqlite3.connect('students.db')
@@ -162,12 +164,41 @@ def recognition(path):
     return
 
 
+def create_csv():
+    for i in pk:
+        conn = sqlite3.connect('students.db')
+
+        cursor = conn.cursor()
+        print("Connected to SQLite")
+
+        sqlite_insert_with_param = """select name from students where id=?"""
+
+        data_tuple = (i)
+        name = cursor.execute(sqlite_insert_with_param, data_tuple)
+        conn.commit()
+
+        for n in name:
+            with open('recognized_student.csv', 'w', newline='') as file:
+                writer = csv.writer(file)
+                writer.writerow(["id", "name"])
+                writer.writerow([i, ','.join(n)])
+
+
 unknown_image.grid(column=0, row=10)
 recognize_button = button_submit = Button(window,
                                           text="Submit",
                                           width=15, height=2, bg="#20bebe",
                                           command=lambda: recognition(hidden.cget("text"))
                                           )
+
 recognize_button.grid(column=1, row=10)
+
+get_csv = Button(window,
+                 text="Get Attendance",
+                 width=15, height=2, bg="#20bebe",
+                 command=lambda: create_csv()
+                 )
+get_csv.grid(column=1, row=11)
+
 # Let the window wait for any events
 window.mainloop()
