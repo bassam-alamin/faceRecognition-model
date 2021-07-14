@@ -173,7 +173,7 @@ def create_csv():
 
         sqlite_insert_with_param = """select name from students where id=?"""
 
-        data_tuple = (i)
+        data_tuple = (i,)
         name = cursor.execute(sqlite_insert_with_param, data_tuple)
         conn.commit()
 

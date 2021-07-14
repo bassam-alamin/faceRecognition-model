@@ -33,14 +33,14 @@ def return_euclidean_distance(feature_1, feature_2):
 path = "images/bassam2.jpg"
 path2 = "images/adamu4.jpg"
 
-unknown_image = cv2.imread(path)
-enc1 = whirldata_face_encodings(unknown_image)
-image2 = cv2.imread(path2)
-enc2 = whirldata_face_encodings(image2)
-
-distance = return_euclidean_distance(enc1, enc2)
-print(distance)
-if distance < 0.5:
-    print("RECOGNIZED")
-else:
-    print("NOT RECOGNIZED")
+# unknown_image = cv2.imread(path)
+# enc1 = whirldata_face_encodings(unknown_image)
+# image2 = cv2.imread(path2)
+# enc2 = whirldata_face_encodings(image2)
+#
+# distance = return_euclidean_distance(enc1, enc2)
+# print(distance)
+# if distance < 0.5:
+#     print("RECOGNIZED")
+# else:
+#     print("NOT RECOGNIZED")
