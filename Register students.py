@@ -129,11 +129,18 @@ unknown_image = Button(window,
 pk = []
 
 
-def recognition(path):
-    print(path)
-    unknown_image = cv2.imread(path)
-    enc1 = Face_Recognition.whirldata_face_encodings(unknown_image)
+def open_camera():
+    global uk_image
+    vid = cv2.VideoCapture(0)
+    while True:
+        ret, frame = vid.read()
+        cv2.imshow('frame', frame)
 
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            uk_image = frame
+            break
+
+    enc1 = Face_Recognition.whirldata_face_encodings(uk_image)
     conn = sqlite3.connect('students.db')
 
     cursor = conn.cursor()
@@ -154,15 +161,57 @@ def recognition(path):
 
         if distance < 0.5:
             pk.append(counter)
+            print(distance)
             print("RECOGNIZED")
         else:
+            print(distance)
             print("NOT RECOGNIZED")
 
         counter += 1
 
     cursor.close()
-    return
 
+    vid.release()
+    cv2.destroyAllWindows()
+
+
+
+
+
+
+# def recognition(path):
+#     print(path)
+#     unknown_image = cv2.imread(path)
+#     enc1 = Face_Recognition.whirldata_face_encodings(unknown_image)
+#
+#     conn = sqlite3.connect('students.db')
+#
+#     cursor = conn.cursor()
+#     print("Connected to SQLite")
+#
+#     sqlite_insert_with_param = """select image from students"""
+#
+#     image_knowns = cursor.execute(sqlite_insert_with_param)
+#     conn.commit()
+#
+#     print("This is", type(image_knowns))
+#
+#     for i in image_knowns:
+#         counter = 1
+#         image2 = cv2.imread(','.join(i))
+#         enc2 = Face_Recognition.whirldata_face_encodings(image2)
+#         distance = Face_Recognition.return_euclidean_distance(enc1, enc2)
+#
+#         if distance < 0.5:
+#             pk.append(counter)
+#             print("RECOGNIZED")
+#         else:
+#             print("NOT RECOGNIZED")
+#
+#         counter += 1
+#
+#     cursor.close()
+#     return
 
 def create_csv():
     for i in pk:
@@ -188,8 +237,8 @@ unknown_image.grid(column=0, row=10)
 recognize_button = button_submit = Button(window,
                                           text="Submit",
                                           width=15, height=2, bg="#20bebe",
-                                          command=lambda: recognition(hidden.cget("text"))
-                                          )
+                                          command=lambda: open_camera())
+
 
 recognize_button.grid(column=1, row=10)
 
