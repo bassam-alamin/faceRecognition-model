@@ -9,6 +9,9 @@ import Face_Recognition
 
 import csv
 
+with open('recognized_student.csv', 'w', newline='') as file:
+    writer = csv.writer(file)
+    writer.writerow(["id", "name"])
 
 def add_to_database(name, reg, image):
     conn = sqlite3.connect('students.db')
@@ -231,9 +234,6 @@ def create_csv():
         conn.commit()
 
         for n in name:
-            with open('recognized_student.csv', 'w', newline='') as file:
-                writer = csv.writer(file)
-                writer.writerow(["id", "name"])
                 writer.writerow([i, ','.join(n)])
 
 
