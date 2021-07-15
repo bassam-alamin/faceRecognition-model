@@ -14,21 +14,25 @@ def add_to_database(name, reg, image):
     conn = sqlite3.connect('students.db')
 
     cursor = conn.cursor()
+
     print(name)
     print(reg)
     print(image)
-    print("Connected to SQLite")
+    if name != " " and reg != " " and image != " ":
+        print("Connected to SQLite")
 
-    sqlite_insert_with_param = """INSERT INTO students
-                              ( name, reg, image) 
-                              VALUES ( ?, ?, ?);"""
+        sqlite_insert_with_param = """INSERT INTO students
+                                  ( name, reg, image) 
+                                  VALUES ( ?, ?, ?);"""
 
-    data_tuple = (name, reg, image)
-    cursor.execute(sqlite_insert_with_param, data_tuple)
-    conn.commit()
-    print("Python Variables inserted successfully into students table")
+        data_tuple = (name, reg, image)
+        cursor.execute(sqlite_insert_with_param, data_tuple)
+        conn.commit()
+        print("Python Variables inserted successfully into students table")
 
-    cursor.close()
+        cursor.close()
+    else:
+        print("Make sure you input Name,Registration number and a valid image")
 
 
 def browseFiles():
