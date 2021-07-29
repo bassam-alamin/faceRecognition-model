@@ -230,8 +230,9 @@ def create_csv():
 
     cursor = conn.cursor()
     print("Connected to SQLite")
-    sqlite_insert_with_param = """select name,reg from students where attended=0"""
+    sqlite_insert_with_param = """select name,reg from students where attended=1"""
     name = cursor.execute(sqlite_insert_with_param)
+
     all = name.fetchall()
     print(all)
     conn.commit()
