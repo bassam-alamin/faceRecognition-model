@@ -9,9 +9,7 @@ import Face_Recognition
 
 import csv
 
-with open('recognized_student.csv', 'w', newline='') as file:
-    writer = csv.writer(file)
-    writer.writerow(["id", "name"])
+
 
 def add_to_database(name, reg, image):
     conn = sqlite3.connect('students.db')
@@ -25,8 +23,8 @@ def add_to_database(name, reg, image):
         print("Connected to SQLite")
 
         sqlite_insert_with_param = """INSERT INTO students
-                                  ( name, reg, image) 
-                                  VALUES ( ?, ?, ?);"""
+                                  ( name, reg, image,attended) 
+                                  VALUES ( ?, ?, ?,0);"""
 
         data_tuple = (name, reg, image)
         cursor.execute(sqlite_insert_with_param, data_tuple)
@@ -153,23 +151,30 @@ def open_camera():
     cursor = conn.cursor()
     print("Connected to SQLite")
 
-    sqlite_insert_with_param = """select image from students"""
+    sqlite_insert_with_param = """select id,image from students"""
 
     image_knowns = cursor.execute(sqlite_insert_with_param)
     conn.commit()
 
     print("This is", type(image_knowns))
 
-    for i in image_knowns:
+    for i in image_knowns.fetchall():
+        print(i)
         counter = 1
-        image2 = cv2.imread(','.join(i))
+        image2 = cv2.imread(i[1])
+        print("This is Image of abdulaziz",image2)
         enc2 = Face_Recognition.whirldata_face_encodings(image2)
         distance = Face_Recognition.return_euclidean_distance(enc1, enc2)
 
         if distance < 0.5:
             pk.append(counter)
             print(distance)
-            print("RECOGNIZED")
+            sqlite_insert_with_param = """update students set attended=1 where id=?"""
+
+            cursor.execute(sqlite_insert_with_param,(i[0],))
+            conn.commit()
+            print("RECOGNIZED and updated to attended")
+
         else:
             print(distance)
             print("NOT RECOGNIZED")
@@ -221,20 +226,23 @@ def open_camera():
 #     return
 
 def create_csv():
-    for i in pk:
-        conn = sqlite3.connect('students.db')
+    conn = sqlite3.connect('students.db')
 
-        cursor = conn.cursor()
-        print("Connected to SQLite")
+    cursor = conn.cursor()
+    print("Connected to SQLite")
+    sqlite_insert_with_param = """select name,reg from students where attended=0"""
+    name = cursor.execute(sqlite_insert_with_param)
+    all = name.fetchall()
+    print(all)
+    conn.commit()
 
-        sqlite_insert_with_param = """select name from students where id=?"""
+    with open('recognized_student.csv', 'w', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerow(["id", "name"])
+        for i in all:
+            print(i)
+            writer.writerow([i[0], ''.join(i[1])])
 
-        data_tuple = (i,)
-        name = cursor.execute(sqlite_insert_with_param, data_tuple)
-        conn.commit()
-
-        for n in name:
-                writer.writerow([i, ','.join(n)])
 
 
 unknown_image.grid(column=0, row=10)
