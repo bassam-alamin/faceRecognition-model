@@ -230,7 +230,7 @@ def create_csv():
 
     cursor = conn.cursor()
     print("Connected to SQLite")
-    sqlite_insert_with_param = """select name,reg from students where attended=1"""
+    sqlite_insert_with_param = """select name,reg,attended from students where attended=1"""
     name = cursor.execute(sqlite_insert_with_param)
 
     all = name.fetchall()
@@ -239,10 +239,10 @@ def create_csv():
 
     with open('recognized_student.csv', 'w', newline='') as file:
         writer = csv.writer(file)
-        writer.writerow(["id", "name"])
+        writer.writerow(["id", "name","Sessions Attended"])
         for i in all:
             print(i)
-            writer.writerow([i[0], ''.join(i[1])])
+            writer.writerow([i[0], ''.join(i[1]),i[2]])
 
 
 
