@@ -151,7 +151,7 @@ def open_camera():
     cursor = conn.cursor()
     print("Connected to SQLite")
 
-    sqlite_insert_with_param = """select id,image from students"""
+    sqlite_insert_with_param = """select id,image,attended from students"""
 
     image_knowns = cursor.execute(sqlite_insert_with_param)
     conn.commit()
@@ -171,7 +171,7 @@ def open_camera():
             print(distance)
             sqlite_insert_with_param = """update students set attended=? where id=?"""
 
-            cursor.execute(sqlite_insert_with_param,(i[0],++1))
+            cursor.execute(sqlite_insert_with_param,(i[0],i[2]+1))
             conn.commit()
             print("RECOGNIZED increased attendance")
 
