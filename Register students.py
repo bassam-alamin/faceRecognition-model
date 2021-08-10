@@ -169,11 +169,11 @@ def open_camera():
         if distance < 0.5:
             pk.append(counter)
             print(distance)
-            sqlite_insert_with_param = """update students set attended=1 where id=?"""
+            sqlite_insert_with_param = """update students set attended=? where id=?"""
 
-            cursor.execute(sqlite_insert_with_param,(i[0],))
+            cursor.execute(sqlite_insert_with_param,(i[0],++1))
             conn.commit()
-            print("RECOGNIZED and updated to attended")
+            print("RECOGNIZED increased attendance")
 
         else:
             print(distance)
