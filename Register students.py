@@ -170,8 +170,9 @@ def open_camera():
             pk.append(counter)
             print(distance)
             sqlite_insert_with_param = """update students set attended=? where id=?"""
+            print("This no is",i[2])
 
-            cursor.execute(sqlite_insert_with_param,(i[0],i[2]+1))
+            cursor.execute(sqlite_insert_with_param,(i[2] +1,i[0]))
             conn.commit()
             print("RECOGNIZED increased attendance")
 
@@ -186,51 +187,12 @@ def open_camera():
     vid.release()
     cv2.destroyAllWindows()
 
-
-
-
-
-
-# def recognition(path):
-#     print(path)
-#     unknown_image = cv2.imread(path)
-#     enc1 = Face_Recognition.whirldata_face_encodings(unknown_image)
-#
-#     conn = sqlite3.connect('students.db')
-#
-#     cursor = conn.cursor()
-#     print("Connected to SQLite")
-#
-#     sqlite_insert_with_param = """select image from students"""
-#
-#     image_knowns = cursor.execute(sqlite_insert_with_param)
-#     conn.commit()
-#
-#     print("This is", type(image_knowns))
-#
-#     for i in image_knowns:
-#         counter = 1
-#         image2 = cv2.imread(','.join(i))
-#         enc2 = Face_Recognition.whirldata_face_encodings(image2)
-#         distance = Face_Recognition.return_euclidean_distance(enc1, enc2)
-#
-#         if distance < 0.5:
-#             pk.append(counter)
-#             print("RECOGNIZED")
-#         else:
-#             print("NOT RECOGNIZED")
-#
-#         counter += 1
-#
-#     cursor.close()
-#     return
-
 def create_csv():
     conn = sqlite3.connect('students.db')
 
     cursor = conn.cursor()
     print("Connected to SQLite")
-    sqlite_insert_with_param = """select name,reg,attended from students where attended=1"""
+    sqlite_insert_with_param = """select name,reg,attended from students where attended > 0"""
     name = cursor.execute(sqlite_insert_with_param)
 
     all = name.fetchall()
